@@ -2,12 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { ProjectCard } from "@/components/project-card";
 import { LeetCodeCard } from "@/components/leetcode-card";
 import type { StatusResponse, ProjectStatus } from "@/types";
@@ -16,14 +10,6 @@ export default function Home() {
   const [data, setData] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [focusTask, setFocusTask] = useState<{
-    project: string;
-    emoji: string;
-    list: string;
-    card: string;
-    url: string;
-  } | null>(null);
-  const [focusOpen, setFocusOpen] = useState(false);
   const [now, setNow] = useState(new Date());
 
   const fetchData = useCallback(async (showLoading = false) => {
@@ -51,54 +37,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const pickFocusTask = () => {
-    if (!data) return;
-    const inProgressTasks: {
-      project: string;
-      emoji: string;
-      list: string;
-      card: string;
-      url: string;
-    }[] = [];
-
-    for (const project of data.projects) {
-      if (project.trello?.lists) {
-        for (const list of project.trello.lists) {
-          if (
-            list.name.toLowerCase().includes("progress") ||
-            list.name.toLowerCase().includes("next")
-          ) {
-            for (const card of list.cards) {
-              inProgressTasks.push({
-                project: project.name,
-                emoji: project.emoji,
-                list: list.name,
-                card: card.name,
-                url: card.shortUrl,
-              });
-            }
-          }
-        }
-      }
-    }
-
-    if (inProgressTasks.length === 0) return;
-    const pick =
-      inProgressTasks[Math.floor(Math.random() * inProgressTasks.length)];
-    setFocusTask(pick);
-    setFocusOpen(true);
-  };
-
   const standardProjects =
     data?.projects.filter((p) => p.type !== "daily-habit") ?? [];
-  const hasInProgress = data?.projects.some((p) =>
-    p.trello?.lists.some(
-      (l) =>
-        (l.name.toLowerCase().includes("progress") ||
-          l.name.toLowerCase().includes("next")) &&
-        l.cards.length > 0
-    )
-  );
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -121,50 +61,38 @@ export default function Home() {
               })}
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            {hasInProgress && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={pickFocusTask}
-                className="border-zinc-700 hover:bg-zinc-800 text-zinc-300"
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchData(true)}
+            disabled={loading}
+            className="border-zinc-700 hover:bg-zinc-800 text-zinc-300"
+          >
+            {loading ? (
+              <svg
+                className="w-4 h-4 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
               >
-                🎯 Focus
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchData(true)}
-              disabled={loading}
-              className="border-zinc-700 hover:bg-zinc-800 text-zinc-300"
-            >
-              {loading ? (
-                <svg
-                  className="w-4 h-4 animate-spin"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="opacity-25"
-                  />
-                  <path
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    fill="currentColor"
-                    className="opacity-75"
-                  />
-                </svg>
-              ) : (
-                "↻"
-              )}{" "}
-              Refresh
-            </Button>
-          </div>
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="opacity-25"
+                />
+                <path
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  fill="currentColor"
+                  className="opacity-75"
+                />
+              </svg>
+            ) : (
+              "↻"
+            )}{" "}
+            Refresh
+          </Button>
         </div>
       </header>
 
@@ -219,34 +147,6 @@ export default function Home() {
           </a>
         </div>
       </footer>
-
-      {/* Focus Mode Dialog */}
-      <Dialog open={focusOpen} onOpenChange={setFocusOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-700 text-zinc-50">
-          <DialogHeader>
-            <DialogTitle className="text-center text-xl">
-              🎯 Focus on this
-            </DialogTitle>
-          </DialogHeader>
-          {focusTask && (
-            <div className="text-center py-4 space-y-3">
-              <p className="text-3xl">{focusTask.emoji}</p>
-              <p className="text-sm text-zinc-400 font-medium">
-                {focusTask.project} &middot; {focusTask.list}
-              </p>
-              <p className="text-lg font-semibold">{focusTask.card}</p>
-              <a
-                href={focusTask.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm text-emerald-400 hover:text-emerald-300 transition-colors mt-2"
-              >
-                Open in Trello →
-              </a>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
