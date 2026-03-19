@@ -20,8 +20,8 @@ interface ProjectCardProps {
 export function ProjectCard({ project, loading }: ProjectCardProps) {
   if (loading) {
     return (
-      <Card className="border-0">
-        <CardHeader>
+      <Card className="border-0 aspect-square flex flex-col">
+        <CardHeader className="shrink-0">
           <CardTitle>
             <Skeleton className="h-6 w-40" />
           </CardTitle>
@@ -29,7 +29,7 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
             <Skeleton className="h-4 w-56" />
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 flex-1">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-4 w-1/2" />
@@ -39,8 +39,8 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
   }
 
   return (
-    <Card className="border-0 transition-shadow hover:shadow-lg">
-      <CardHeader>
+    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square flex flex-col">
+      <CardHeader className="shrink-0">
         <CardTitle className="flex items-center gap-2 text-lg">
           <span>{project.emoji}</span>
           <span>{project.name}</span>
@@ -54,7 +54,7 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-1 overflow-y-auto">
         {/* GitHub section */}
         {project.github && (
           <div>

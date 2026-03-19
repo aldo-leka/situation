@@ -83,15 +83,15 @@ export function LeetCodeCard() {
 
   if (!mounted) {
     return (
-      <Card className="border-0">
-        <CardHeader>
+      <Card className="border-0 aspect-square flex flex-col">
+        <CardHeader className="shrink-0">
           <CardTitle className="flex items-center gap-2 text-lg">
             <span>💻</span>
             <span>LeetCode</span>
           </CardTitle>
           <CardDescription>Daily coding practice</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1">
           <div className="h-24 animate-pulse bg-zinc-800 rounded" />
         </CardContent>
       </Card>
@@ -99,8 +99,8 @@ export function LeetCodeCard() {
   }
 
   return (
-    <Card className="border-0 transition-shadow hover:shadow-lg">
-      <CardHeader>
+    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square flex flex-col">
+      <CardHeader className="shrink-0">
         <CardTitle className="flex items-center gap-2 text-lg">
           <span>💻</span>
           <span>LeetCode</span>
@@ -116,7 +116,7 @@ export function LeetCodeCard() {
           </span>
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1 overflow-y-auto">
         <div className="flex gap-[3px] overflow-x-auto pb-1">
           {weeks.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-[3px]">
