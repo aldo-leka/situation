@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Project grid */}
       <main className="px-1.5 py-1.5">
-        <div className="flex flex-wrap gap-1.5">
+        <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}>
           {loading && !data
             ? Array.from({ length: 4 }).map((_, i) => (
                 <ProjectCard
