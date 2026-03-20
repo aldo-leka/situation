@@ -83,7 +83,7 @@ export function LeetCodeCard() {
 
   if (!mounted) {
     return (
-      <Card className="border-0 aspect-square flex flex-col">
+      <Card className="border-0 aspect-square">
         <CardHeader className="shrink-0">
           <CardTitle className="flex items-center gap-2 text-lg">
             <span>💻</span>
@@ -99,7 +99,7 @@ export function LeetCodeCard() {
   }
 
   return (
-    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square flex flex-col">
+    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square">
       <CardHeader className="shrink-0">
         <CardTitle className="flex items-center gap-2 text-lg">
           <span>💻</span>
