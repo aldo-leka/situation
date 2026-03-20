@@ -5,7 +5,6 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardContent,
 } from "@/components/ui/card";
 
@@ -83,14 +82,14 @@ export function LeetCodeCard() {
 
   if (!mounted) {
     return (
-      <Card className="border-0 aspect-square" size="sm">
-        <CardHeader>
+      <Card className="border-0 aspect-square py-2 gap-2">
+        <CardHeader className="px-2.5">
           <CardTitle className="flex items-center gap-1.5 text-sm">
             <span>💻</span>
             <span>LeetCode</span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-2.5">
           <div className="h-16 animate-pulse bg-zinc-800 rounded" />
         </CardContent>
       </Card>
@@ -98,8 +97,8 @@ export function LeetCodeCard() {
   }
 
   return (
-    <Card className="border-0 aspect-square hover:ring-zinc-700 transition-shadow" size="sm">
-      <CardHeader>
+    <Card className="border-0 aspect-square py-2 gap-2 hover:ring-zinc-700 transition-shadow">
+      <CardHeader className="px-2.5 shrink-0">
         <CardTitle className="flex items-center justify-between text-sm">
           <span className="flex items-center gap-1.5">
             <span>💻</span>
@@ -114,7 +113,7 @@ export function LeetCodeCard() {
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="overflow-y-auto max-h-48">
+      <CardContent className="px-2.5 flex-1 overflow-y-auto min-h-0">
         <div className="flex gap-[2px] overflow-x-auto pb-0.5">
           {weeks.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-[2px]">
