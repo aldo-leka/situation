@@ -1,10 +1,15 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
+
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
 const KEY = "leetcode-streak";
 
 export async function GET() {
-  const days: string[] = (await kv.get(KEY)) ?? [];
+  const days: string[] = (await redis.get(KEY)) ?? [];
   return NextResponse.json({ days });
 }
 
@@ -15,7 +20,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid day" }, { status: 400 });
   }
 
-  const days: string[] = (await kv.get(KEY)) ?? [];
+  const days: string[] = (await redis.get(KEY)) ?? [];
   const set = new Set(days);
 
   if (action === "remove") {
@@ -25,7 +30,7 @@ export async function POST(request: NextRequest) {
   }
 
   const sorted = [...set].sort();
-  await kv.set(KEY, sorted);
+  await redis.set(KEY, sorted);
 
   return NextResponse.json({ days: sorted });
 }

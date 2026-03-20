@@ -51,11 +51,7 @@ export function LeetCodeCard() {
         setCompletedDays(new Set(days));
       }
     } catch {
-      // Fall back to localStorage
-      const stored = localStorage.getItem("situation-leetcode-days");
-      if (stored) {
-        try { setCompletedDays(new Set(JSON.parse(stored))); } catch { /* ignore */ }
-      }
+      // KV unavailable, start empty
     }
   }, []);
 
