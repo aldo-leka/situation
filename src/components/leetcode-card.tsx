@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-
-const STORAGE_KEY = "situation-leetcode-days";
 
 function getTodayStr(): string {
   return new Date().toISOString().split("T")[0];
@@ -45,36 +43,60 @@ export function LeetCodeCard() {
   const [completedDays, setCompletedDays] = useState<Set<string>>(new Set());
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setCompletedDays(new Set(JSON.parse(stored)));
-      } catch {
-        // ignore
+  const fetchStreak = useCallback(async () => {
+    try {
+      const res = await fetch("/api/streak");
+      if (res.ok) {
+        const { days } = await res.json();
+        setCompletedDays(new Set(days));
+      }
+    } catch {
+      // Fall back to localStorage
+      const stored = localStorage.getItem("situation-leetcode-days");
+      if (stored) {
+        try { setCompletedDays(new Set(JSON.parse(stored))); } catch { /* ignore */ }
       }
     }
   }, []);
 
-  const toggleDay = (day: string) => {
+  useEffect(() => {
+    setMounted(true);
+    fetchStreak();
+  }, [fetchStreak]);
+
+  const toggleDay = async (day: string) => {
+    const has = completedDays.has(day);
+    // Optimistic update
     setCompletedDays((prev) => {
       const next = new Set(prev);
-      if (next.has(day)) {
-        next.delete(day);
-      } else {
-        next.add(day);
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]));
+      if (has) next.delete(day); else next.add(day);
       return next;
     });
+
+    try {
+      const res = await fetch("/api/streak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ day, action: has ? "remove" : "add" }),
+      });
+      if (res.ok) {
+        const { days } = await res.json();
+        setCompletedDays(new Set(days));
+      }
+    } catch {
+      // Revert on failure
+      setCompletedDays((prev) => {
+        const next = new Set(prev);
+        if (has) next.add(day); else next.delete(day);
+        return next;
+      });
+    }
   };
 
   const days = getLast84Days();
   const streak = getStreak(completedDays);
   const todayDone = completedDays.has(getTodayStr());
 
-  // Group into weeks (columns of 7)
   const weeks: string[][] = [];
   for (let i = 0; i < days.length; i += 7) {
     weeks.push(days.slice(i, i + 7));
