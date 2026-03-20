@@ -20,7 +20,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project, loading }: ProjectCardProps) {
   if (loading) {
     return (
-      <Card className="border-0" size="sm">
+      <Card className="border-0 aspect-square" size="sm">
         <CardHeader>
           <CardTitle>
             <Skeleton className="h-4 w-28" />
@@ -35,7 +35,7 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
   }
 
   return (
-    <Card className="border-0 hover:ring-zinc-700 transition-shadow" size="sm">
+    <Card className="border-0 aspect-square hover:ring-zinc-700 transition-shadow" size="sm">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-sm">
           <span className="flex items-center gap-1.5 truncate">

@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Project grid */}
       <main className="px-1.5 py-1.5">
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-3 gap-1.5">
           {loading && !data
             ? Array.from({ length: 4 }).map((_, i) => (
                 <ProjectCard
