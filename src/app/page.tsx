@@ -44,33 +44,29 @@ export default function Home() {
     <div className="min-h-screen bg-zinc-950">
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Situation</h1>
-            <p className="text-sm text-zinc-500">
-              {now.toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}{" "}
-              &middot;{" "}
-              {now.toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-          </div>
+        <div className="px-2 py-1.5 flex items-center justify-between">
+          <p className="text-xs text-zinc-500">
+            {now.toLocaleDateString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+            })}{" "}
+            &middot;{" "}
+            {now.toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => fetchData(true)}
             disabled={loading}
-            className="border-zinc-700 hover:bg-zinc-800 text-zinc-300"
+            className="h-6 w-6 p-0 text-zinc-500 hover:text-zinc-300"
           >
             {loading ? (
               <svg
-                className="w-4 h-4 animate-spin"
+                className="w-3 h-3 animate-spin"
                 viewBox="0 0 24 24"
                 fill="none"
               >
@@ -89,9 +85,8 @@ export default function Home() {
                 />
               </svg>
             ) : (
-              "↻"
-            )}{" "}
-            Refresh
+              <span className="text-xs">↻</span>
+            )}
           </Button>
         </div>
       </header>
@@ -106,8 +101,8 @@ export default function Home() {
       )}
 
       {/* Project grid */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <main className="px-1.5 py-1.5">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-1.5">
           {loading && !data
             ? Array.from({ length: 4 }).map((_, i) => (
                 <ProjectCard
@@ -122,31 +117,7 @@ export default function Home() {
           <LeetCodeCard />
         </div>
 
-        {data && (
-          <p className="text-xs text-zinc-600 mt-6 text-center">
-            Last fetched:{" "}
-            {new Date(data.fetchedAt).toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            })}
-          </p>
-        )}
       </main>
-
-      {/* Footer */}
-      <footer className="mt-auto border-t border-zinc-800 py-4">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-          <a
-            href="https://aldo.al"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
-          >
-            aldo.al
-          </a>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -20,47 +20,42 @@ interface ProjectCardProps {
 export function ProjectCard({ project, loading }: ProjectCardProps) {
   if (loading) {
     return (
-      <Card className="border-0 aspect-square">
-        <CardHeader className="shrink-0">
+      <Card className="border-0" size="sm">
+        <CardHeader>
           <CardTitle>
-            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-28" />
           </CardTitle>
-          <CardDescription>
-            <Skeleton className="h-4 w-56" />
-          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3 flex-1 min-h-0">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
+        <CardContent className="space-y-2">
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-3/4" />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square">
-      <CardHeader className="shrink-0">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <span>{project.emoji}</span>
-          <span>{project.name}</span>
-        </CardTitle>
-        <CardDescription className="flex items-center justify-between">
-          <span>{project.description}</span>
+    <Card className="border-0 hover:ring-zinc-700 transition-shadow" size="sm">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-1.5 truncate">
+            <span>{project.emoji}</span>
+            <span>{project.name}</span>
+          </span>
           {project.lastActivity && (
-            <Badge variant="secondary" className="text-xs shrink-0 ml-2">
+            <Badge variant="secondary" className="text-[10px] shrink-0 ml-1">
               {relativeTime(project.lastActivity)}
             </Badge>
           )}
-        </CardDescription>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 flex-1 overflow-y-auto">
+      <CardContent className="space-y-2 overflow-y-auto max-h-48">
         {/* GitHub section */}
         {project.github && (
           <div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wide">
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-1 font-medium uppercase tracking-wide">
               <svg
-                className="w-3.5 h-3.5"
+                className="w-3 h-3"
                 fill="currentColor"
                 viewBox="0 0 16 16"
               >
@@ -79,10 +74,10 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
                 rel="noopener noreferrer"
                 className="block group/commit"
               >
-                <p className="text-sm truncate group-hover/commit:text-primary transition-colors">
+                <p className="text-xs truncate group-hover/commit:text-primary transition-colors">
                   {project.github.lastCommit.message}
                 </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-[10px] text-muted-foreground">
                   {project.github.lastCommit.author} &middot;{" "}
                   {relativeTime(project.github.lastCommit.date)}
                 </p>
@@ -96,9 +91,9 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
         {/* Trello section */}
         {project.trello && (
           <div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wide">
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-1 font-medium uppercase tracking-wide">
               <svg
-                className="w-3.5 h-3.5"
+                className="w-3 h-3"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -113,25 +108,25 @@ export function ProjectCard({ project, loading }: ProjectCardProps) {
             ) : project.trello.lists.length === 0 ? (
               <p className="text-xs text-muted-foreground">No cards found</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {project.trello.lists.map((list) => (
                   <div key={list.id}>
-                    <p className="text-xs font-medium text-muted-foreground mb-1">
+                    <p className="text-[10px] font-medium text-muted-foreground mb-0.5">
                       {list.name}
                       <span className="ml-1 text-muted-foreground/60">
                         ({list.cards.length})
                       </span>
                     </p>
-                    <ul className="space-y-0.5">
+                    <ul className="space-y-0">
                       {list.cards.map((card) => (
                         <li key={card.id}>
                           <a
                             href={card.shortUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-sm hover:text-primary transition-colors py-0.5"
+                            className="flex items-center gap-1 text-xs hover:text-primary transition-colors py-px"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0" />
+                            <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
                             <span className="truncate">{card.name}</span>
                           </a>
                         </li>

@@ -83,43 +83,41 @@ export function LeetCodeCard() {
 
   if (!mounted) {
     return (
-      <Card className="border-0 aspect-square">
-        <CardHeader className="shrink-0">
-          <CardTitle className="flex items-center gap-2 text-lg">
+      <Card className="border-0" size="sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-1.5 text-sm">
             <span>💻</span>
             <span>LeetCode</span>
           </CardTitle>
-          <CardDescription>Daily coding practice</CardDescription>
         </CardHeader>
-        <CardContent className="flex-1">
-          <div className="h-24 animate-pulse bg-zinc-800 rounded" />
+        <CardContent>
+          <div className="h-16 animate-pulse bg-zinc-800 rounded" />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-0 transition-shadow hover:shadow-lg aspect-square">
-      <CardHeader className="shrink-0">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <span>💻</span>
-          <span>LeetCode</span>
-        </CardTitle>
-        <CardDescription className="flex items-center justify-between">
-          <span>Daily coding practice</span>
-          <span className="text-xs font-medium">
+    <Card className="border-0 hover:ring-zinc-700 transition-shadow" size="sm">
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-1.5">
+            <span>💻</span>
+            <span>LeetCode</span>
+          </span>
+          <span className="text-[10px] font-medium">
             {streak > 0 ? (
-              <span className="text-emerald-400">🔥 {streak} day streak</span>
+              <span className="text-emerald-400">🔥 {streak}d</span>
             ) : (
               <span className="text-zinc-500">No streak</span>
             )}
           </span>
-        </CardDescription>
+        </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto">
-        <div className="flex gap-[3px] overflow-x-auto pb-1">
+      <CardContent className="overflow-y-auto max-h-48">
+        <div className="flex gap-[2px] overflow-x-auto pb-0.5">
           {weeks.map((week, wi) => (
-            <div key={wi} className="flex flex-col gap-[3px]">
+            <div key={wi} className="flex flex-col gap-[2px]">
               {week.map((day) => {
                 const done = completedDays.has(day);
                 const isToday = day === getTodayStr();
@@ -128,7 +126,7 @@ export function LeetCodeCard() {
                     key={day}
                     onClick={() => toggleDay(day)}
                     title={day}
-                    className={`w-3 h-3 rounded-sm transition-colors ${
+                    className={`w-2.5 h-2.5 rounded-sm transition-colors ${
                       done
                         ? "bg-emerald-500 hover:bg-emerald-400"
                         : isToday
@@ -141,17 +139,14 @@ export function LeetCodeCard() {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">Last 12 weeks</span>
-          {!todayDone && (
-            <button
-              onClick={() => toggleDay(getTodayStr())}
-              className="text-xs text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
-            >
-              ✓ Mark today done
-            </button>
-          )}
-        </div>
+        {!todayDone && (
+          <button
+            onClick={() => toggleDay(getTodayStr())}
+            className="text-[10px] text-emerald-400 hover:text-emerald-300 font-medium transition-colors mt-1"
+          >
+            ✓ Mark today
+          </button>
+        )}
       </CardContent>
     </Card>
   );
