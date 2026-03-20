@@ -1,49 +1,52 @@
-const CACHE_NAME = "situation-v1";
-const urlsToCache = ["/", "/api/status"];
+const CACHE_NAME = "situation-v2";
 
 self.addEventListener("install", (event) => {
+  // Take over immediately, don't wait for old SW to die
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Cache hit - return response
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== "basic") {
-          return response;
-        }
-
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
-        return response;
-      });
+      return cache.addAll(["/", "/api/status"]);
     })
   );
 });
 
 self.addEventListener("activate", (event) => {
-  const cacheWhitelist = [CACHE_NAME];
+  // Claim all tabs immediately so the new SW takes effect without a reload
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      self.clients.claim(),
+      // Purge all old caches
+      caches.keys().then((names) =>
+        Promise.all(
+          names
+            .filter((n) => n !== CACHE_NAME)
+            .map((n) => caches.delete(n))
+        )
+      ),
+    ])
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+
+  // Only handle GET requests
+  if (request.method !== "GET") return;
+
+  // Network-first: try network, fall back to cache (offline support)
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        // Got a good response, update the cache for offline use
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
+        return response;
+      })
+      .catch(() => {
+        // Network failed (offline), serve from cache
+        return caches.match(request);
+      })
   );
 });
